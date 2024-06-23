@@ -26,12 +26,16 @@ const putTxt = (text) => { line.textContent = text; };
 startKar.addEventListener("click", () => { disblock(crush); });
 khatam.addEventListener("click", () => { disNone(crush); });
 
+// Global variables to hold the current counter and loop values
+let counterNum = 0;
+let loopNum = 0;
+
 // Update counter display for a selected Q-item
 const updateCounter = (q, qId) => {
-    let storedCount = parseInt(localStorage.getItem(qId) || 0);
-    counter.textContent = storedCount;
-    let storedLoop = parseInt(localStorage.getItem(`loop-${qId}`) || 0);
-    mLoop.textContent = storedLoop;
+    counterNum = parseInt(localStorage.getItem(qId) || 0);
+    loopNum = parseInt(localStorage.getItem(`loop-${qId}`) || 0);
+    counter.textContent = counterNum;
+    mLoop.textContent = loopNum;
     putTxt(q);
 };
 
@@ -47,9 +51,9 @@ const currentDate = new Date().toLocaleString('en-us', { weekday: 'long' });
 day.textContent = currentDate;
 
 // Retrieve and display stored counter value
-let counterNum = parseInt(localStorage.getItem("genti") || 0);
+counterNum = parseInt(localStorage.getItem("genti") || 0);
 counter.textContent = counterNum;
-let loopNum = parseInt(localStorage.getItem("loop-genti") || 0);
+loopNum = parseInt(localStorage.getItem("loop-genti") || 0);
 mLoop.textContent = loopNum;
 
 // Main counter click event
@@ -61,6 +65,7 @@ counter.addEventListener("click", () => {
         mLoop.textContent = loopNum;
     }
     counter.textContent = counterNum;
+
     let currentQItem = qItems.find(q => q.elem.textContent === line.textContent);
     if (currentQItem) {
         localStorage.setItem(currentQItem.id, counterNum);
@@ -68,6 +73,7 @@ counter.addEventListener("click", () => {
         currentQItem.count.textContent = counterNum;
         currentQItem.loop.textContent = loopNum;
     }
+
     localStorage.setItem("genti", counterNum);
     localStorage.setItem("loop-genti", loopNum);
 });
@@ -78,8 +84,10 @@ resetButton.addEventListener("click", () => {
     loopNum = 0;
     counter.textContent = counterNum;
     mLoop.textContent = loopNum;
+
     localStorage.setItem("genti", counterNum);
     localStorage.setItem("loop-genti", loopNum);
+
     qItems.forEach(q => {
         localStorage.setItem(q.id, 0);
         localStorage.setItem(`loop-${q.id}`, 0);
@@ -96,5 +104,6 @@ qItems.forEach(({ elem, id, count, loop }) => {
     loop.textContent = storedLoop;
 });
 
-// Set initial text
+// Set initial text and update the initial counter values
 putTxt(qItems[0].elem.textContent);
+updateCounter(qItems[0].elem.textContent, qItems[0].id);
